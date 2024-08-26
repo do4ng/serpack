@@ -1,0 +1,18 @@
+{
+  "name": "serpack",
+  "version": "0.0.0",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./types/index.d.ts",
+  "files": [
+    "types",
+    "dist"
+  ],
+  "repository": "https://github.com/do4ng/serpack",
+  "dependencies": {
+    "esbuild": "^0.23.1",
+    "oxc-parser": "^0.25.0",
+    "oxc-resolver": "^1.10.2",
+    "oxc-transform": "^0.25.0"
+  }
+}

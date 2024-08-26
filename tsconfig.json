@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "ESNext",
+
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowJs": false,
+    "lib": ["ESNext", "DOM"],
+
+    "outDir": "types",
+    "declaration": true,
+    "emitDeclarationOnly": true,
+
+    "types": ["node"],
+
+    "baseUrl": ".",
+    "isolatedDeclarations": true,
+    "removeComments": false,
+
+    "paths": {
+      "$/*": ["./packages/*"]
+    }
+  },
+  "exclude": ["**/node_modules/**", "**/dist/**"]
+}
