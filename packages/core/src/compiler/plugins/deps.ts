@@ -2,12 +2,13 @@
 /* eslint-disable no-nested-ternary */
 import { Plugin, BuildOptions as esbuildBuildOptions } from 'esbuild';
 import { builtinModules } from 'module';
+import { join } from 'path';
 import { ResolverFactory } from 'oxc-resolver';
 import { BuildOptions } from '../../options';
 
-const cache = new Map<string, string>();
+let cache = new Map<string, string>();
 
-const joinPath = (a: string, b: string) => {
+export const joinPath = (a: string, b: string) => {
   a = a.replace(/\\/g, '/');
   b = b.replace(/\\/g, '/');
 
@@ -24,8 +25,13 @@ const joinPath = (a: string, b: string) => {
   return `./${a}${a.length === 0 ? '' : '/'}${b}`;
 };
 
-export function resetCache(): void {
+export function resetCache(initial?: Map<string, string>): void {
   cache.clear();
+  if (initial) cache = initial;
+}
+
+export function getCache(): Map<string, string> {
+  return cache;
 }
 
 export function depsPlugin(
@@ -40,9 +46,9 @@ export function depsPlugin(
       output: string,
       initialOptions: esbuildBuildOptions
     ) => Promise<any>;
+    builds: Record<string, { include: string[]; exclude: string[] }>;
     paths: {
-      entry: string;
-      chunks: string;
+      entries: Record<string, string>;
     };
     options: BuildOptions;
   },
@@ -56,7 +62,7 @@ export function depsPlugin(
 
     const extension = kit.options.extensions[format];
 
-    const style = kit.options?.chunks?.name || '[id].[index]';
+    const style = kit.options?.chunks?.name || '[id][index]'; // [index]: 중복방지
 
     return `${style
       .replace(/\[id\]/g, id)
@@ -70,7 +76,7 @@ export function depsPlugin(
         process.cwd(),
         build.initialOptions.entryPoints[0]
       ).path;
-      const dependencies = kit.deps.dependents[entry];
+      const excludedDependencies = kit.builds[entry].exclude || [];
 
       build.onResolve({ filter: /.*/ }, async (args) => {
         // node: as external
@@ -107,8 +113,8 @@ export function depsPlugin(
 
         // resolve chunks
 
-        if (dependencies.includes(resolved)) {
-          return { path: joinPath(prefix, cache.get(resolved)), external: false };
+        if (!excludedDependencies.includes(resolved)) {
+          return { external: false };
         }
 
         // is already compiled
@@ -119,7 +125,10 @@ export function depsPlugin(
 
         cache.set(resolved, generateChunk(build.initialOptions.format as any));
 
-        const output = `./chunks/${cache.get(resolved)}`;
+        const output = join(
+          kit.options?.chunks?.dir ? kit.options?.chunks?.dir : './chunks/',
+          cache.get(resolved)
+        );
 
         await kit.build(resolved, output, build.initialOptions);
 
