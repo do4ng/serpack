@@ -1,6 +1,6 @@
 import { join } from 'path';
 
-import { compile } from '../packages/core/src/compiler';
+import { Compiler } from '../packages/core/src/compiler';
 import { generateTypeDeclaration } from '../packages/core/src/compiler/dts';
 import { BuildOptions } from '../packages/core/src/options';
 
@@ -17,5 +17,13 @@ const options: BuildOptions = {
   outdir,
 };
 
-compile(target, options);
+const compiler = new Compiler(
+  {
+    [target]: 'index',
+  },
+  options
+);
+compiler.beforeBuild();
+compiler.compile();
+
 generateTypeDeclaration(target, join(outdir, '../', 'types'));
