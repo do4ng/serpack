@@ -1,5 +1,5 @@
 import { NapiResolveOptions, ResolverFactory } from "oxc-resolver";
-import { BuildOptions } from "../options";
+import { BuildOptions } from "$/core/src/options";
 export interface FileMeta {
 	raw: string;
 	imports?: {

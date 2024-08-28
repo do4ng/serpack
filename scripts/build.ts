@@ -15,6 +15,12 @@ const options: BuildOptions = {
     name: 'chunk.[index]',
   },
   outdir,
+  resolverOptions: {
+    roots: [process.cwd()],
+    tsconfig: {
+      configFile: join(process.cwd(), 'tsconfig.json'),
+    },
+  },
 };
 
 const compiler = new Compiler(
@@ -26,4 +32,4 @@ const compiler = new Compiler(
 compiler.beforeBuild();
 compiler.compile();
 
-generateTypeDeclaration(target, join(outdir, '../', 'types'));
+generateTypeDeclaration(target, join(outdir, '../', 'types'), options);

@@ -2,6 +2,7 @@ import path, { join } from 'path';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import transform from 'oxc-transform';
 import { Analyzer } from '../../core';
+import { BuildOptions } from '../../options';
 
 function findCommonBasePath(paths: string[]) {
   if (paths.length === 0) return '';
@@ -48,9 +49,14 @@ function replaceExtension(filePath: string, newExtension: string) {
   );
 }
 
-export function generateTypeDeclaration(entry: string, outdir: string): void {
+export function generateTypeDeclaration(
+  entry: string,
+  outdir: string,
+  options?: BuildOptions
+): void {
   const analyzer = new Analyzer(entry, {
     excludeNodeModules: true,
+    ...options,
   });
 
   const targets = Object.keys(analyzer.filesMeta);

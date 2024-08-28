@@ -84,9 +84,11 @@ export class Compiler {
   }
 
   analyzeEntries(): void {
-    // 1. Collect all dependencies and dependents from each entry point
+    console.log(this.options);
     for (const entry of this.entryPoints) {
-      const analyzer = new Analyzer(entry);
+      console.log(this.options);
+
+      const analyzer = new Analyzer(entry, this.options);
       const { dependencies, dependents } = analyzer.analyzeDeps();
 
       this.dependencies = mergeObjects(this.dependencies, dependencies);

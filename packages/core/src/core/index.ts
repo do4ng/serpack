@@ -4,7 +4,7 @@ import { dirname } from 'path';
 import { moduleLexerSync } from 'oxc-parser';
 import { NapiResolveOptions, ResolverFactory } from 'oxc-resolver';
 
-import { BuildOptions } from '../options';
+import { BuildOptions } from '$/core/src/options';
 import builtin from '../builtin';
 import { debug } from '../logger';
 
@@ -34,6 +34,9 @@ export class Analyzer {
   resolverOptions: NapiResolveOptions;
 
   constructor(entryPoint: string, options?: BuildOptions) {
+    this.options = options || {};
+
+    console.log('options', this.options);
     this.resolverOptions = this.options?.resolverOptions || {};
     this.factory = new ResolverFactory({
       conditionNames: ['node', 'import'],
@@ -41,6 +44,7 @@ export class Analyzer {
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
       ...this.resolverOptions,
     });
+
     this.entryPoint = this.factory.sync(process.cwd(), entryPoint).path;
     this.entryCode = readFileSync(this.entryPoint).toString();
     this.files = {
@@ -52,8 +56,6 @@ export class Analyzer {
       },
     };
     this.dependents = {};
-
-    this.options = options || {};
 
     this.analyze(this.entryPoint);
   }
