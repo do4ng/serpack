@@ -84,10 +84,7 @@ export class Compiler {
   }
 
   analyzeEntries(): void {
-    console.log(this.options);
     for (const entry of this.entryPoints) {
-      console.log(this.options);
-
       const analyzer = new Analyzer(entry, this.options);
       const { dependencies, dependents } = analyzer.analyzeDeps();
 

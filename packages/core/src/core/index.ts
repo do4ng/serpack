@@ -36,7 +36,6 @@ export class Analyzer {
   constructor(entryPoint: string, options?: BuildOptions) {
     this.options = options || {};
 
-    console.log('options', this.options);
     this.resolverOptions = this.options?.resolverOptions || {};
     this.factory = new ResolverFactory({
       conditionNames: ['node', 'import'],
@@ -50,14 +49,12 @@ export class Analyzer {
     this.files = {
       [this.entryPoint]: this.entryCode,
     };
+    this.filesMeta = {};
     this.filesMeta = {
-      [this.entryPoint]: {
-        raw: this.entryCode,
-      },
+      [this.entryPoint]: this.analyze(this.entryPoint),
     };
-    this.dependents = {};
 
-    this.analyze(this.entryPoint);
+    this.dependents = {};
   }
 
   checkValidTarget(target: string): boolean {
@@ -83,7 +80,7 @@ export class Analyzer {
    */
   analyze(target: string, keep: boolean = true): FileMeta {
     // cache
-    if (this.files[target] && this.filesMeta[target].imports) {
+    if (this.filesMeta[target] && Object.hasOwn(this.filesMeta[target], 'imports')) {
       return this.filesMeta[target];
     }
 
