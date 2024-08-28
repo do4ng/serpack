@@ -1,4 +1,5 @@
 import esbuild from "esbuild";
+import { NapiResolveOptions } from "oxc-resolver";
 export type Format = "cjs" | "esm";
 export interface BuildOptions {
 	externals?: string[];
@@ -12,4 +13,5 @@ export interface BuildOptions {
 	};
 	clean?: boolean;
 	extensions?: { [format in Format]? : `.${string}`};
+	resolverOptions?: NapiResolveOptions;
 }

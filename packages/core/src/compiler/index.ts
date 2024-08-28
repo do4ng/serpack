@@ -7,6 +7,7 @@ import esbuild, { Format } from 'esbuild';
 import { BuildOptions } from '../options';
 import { Analyzer } from '../core';
 import { depsPlugin, getCache, joinPath, resetCache } from './plugins/deps';
+import { warn } from '../logger';
 
 function mergeObjects(...objects: Record<string, string[]>[]): Record<string, string[]> {
   return objects.reduce((acc, obj) => {
@@ -76,6 +77,10 @@ export class Compiler {
     this.options = options || {};
     this.entryPoints = Object.keys(entries);
     this.entries = entries;
+
+    if (this.entryPoints.length === 1) {
+      warn('This "Compile" feature is not recommended for single entryPoint.');
+    }
   }
 
   analyzeEntries(): void {

@@ -1,4 +1,4 @@
-import { ResolverFactory } from "oxc-resolver";
+import { NapiResolveOptions, ResolverFactory } from "oxc-resolver";
 import { BuildOptions } from "../options";
 export interface FileMeta {
 	raw: string;
@@ -18,6 +18,7 @@ export declare class Analyzer {
 	dependencies: Record<string, string[]>;
 	options: BuildOptions;
 	factory: ResolverFactory;
+	resolverOptions: NapiResolveOptions;
 	constructor(entryPoint: string, options?: BuildOptions);
 	checkValidTarget(target: string): boolean;
 	analyze(target: string, keep?: boolean): FileMeta;

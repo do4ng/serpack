@@ -10,6 +10,7 @@
   ],
   "repository": "https://github.com/do4ng/serpack",
   "dependencies": {
+    "colors": "^1.4.0",
     "esbuild": "^0.23.1",
     "oxc-parser": "^0.25.0",
     "oxc-resolver": "^1.10.2",

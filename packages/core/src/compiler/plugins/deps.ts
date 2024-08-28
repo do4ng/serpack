@@ -5,6 +5,7 @@ import { join } from 'path';
 import { ResolverFactory } from 'oxc-resolver';
 import { BuildOptions } from '../../options';
 import builtin from '../../builtin';
+import { debug } from '../../logger';
 
 let cache = new Map<string, string>();
 
@@ -124,6 +125,8 @@ export function depsPlugin(
         }
 
         cache.set(resolved, generateChunk(build.initialOptions.format as any));
+
+        debug(`[resolved] ${resolved} => ${cache.get(resolved)}`);
 
         const output = join(
           kit.options?.chunks?.dir ? kit.options?.chunks?.dir : './chunks/',

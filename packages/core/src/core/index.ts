@@ -2,10 +2,11 @@ import { readFileSync } from 'fs';
 import { dirname } from 'path';
 
 import { moduleLexerSync } from 'oxc-parser';
-import { ResolverFactory } from 'oxc-resolver';
+import { NapiResolveOptions, ResolverFactory } from 'oxc-resolver';
 
 import { BuildOptions } from '../options';
 import builtin from '../builtin';
+import { debug } from '../logger';
 
 export interface FileMeta {
   raw: string;
@@ -30,11 +31,15 @@ export class Analyzer {
 
   factory: ResolverFactory;
 
+  resolverOptions: NapiResolveOptions;
+
   constructor(entryPoint: string, options?: BuildOptions) {
+    this.resolverOptions = this.options?.resolverOptions || {};
     this.factory = new ResolverFactory({
       conditionNames: ['node', 'import'],
       mainFields: ['module', 'main'],
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+      ...this.resolverOptions,
     });
     this.entryPoint = this.factory.sync(process.cwd(), entryPoint).path;
     this.entryCode = readFileSync(this.entryPoint).toString();
@@ -153,6 +158,18 @@ export class Analyzer {
         this.dependents[dep].push(file);
       }
     }
+
+    debug(
+      `[serpack/analyzer]\n${JSON.stringify(
+        {
+          dependencies: this.dependencies,
+          dependents: this.dependents,
+          totalFiles: Object.keys(this.filesMeta).length,
+        },
+        undefined,
+        2
+      )}`
+    );
 
     return {
       dependencies: this.dependencies,

@@ -1,4 +1,5 @@
 import esbuild from 'esbuild';
+import { NapiResolveOptions } from 'oxc-resolver';
 
 export type Format = 'cjs' | 'esm';
 
@@ -39,4 +40,6 @@ export interface BuildOptions {
     // eslint-disable-next-line no-unused-vars
     [format in Format]?: `.${string}`;
   };
+
+  resolverOptions?: NapiResolveOptions;
 }
