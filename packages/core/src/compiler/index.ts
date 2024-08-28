@@ -52,8 +52,6 @@ function optimizeDependencies(
     };
   }
 
-  console.log(result);
-
   return result;
 }
 

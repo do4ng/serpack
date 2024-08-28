@@ -1,11 +1,11 @@
 import { readFileSync } from 'fs';
-import { builtinModules } from 'module';
 import { dirname } from 'path';
 
 import { moduleLexerSync } from 'oxc-parser';
 import { ResolverFactory } from 'oxc-resolver';
 
 import { BuildOptions } from '../options';
+import builtin from '../builtin';
 
 export interface FileMeta {
   raw: string;
@@ -101,7 +101,7 @@ export class Analyzer {
         target: '',
       };
 
-      if (builtinModules.includes($importer.module)) {
+      if (builtin.includes($importer.module)) {
         $importer.target = $importer.raw;
       } else if (!$importer.isDynamic) {
         const resolved = this.factory.sync(dirname(target), $importer.module);

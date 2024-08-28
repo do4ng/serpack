@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-nested-ternary */
 import { Plugin, BuildOptions as esbuildBuildOptions } from 'esbuild';
-import { builtinModules } from 'module';
 import { join } from 'path';
 import { ResolverFactory } from 'oxc-resolver';
 import { BuildOptions } from '../../options';
+import builtin from '../../builtin';
 
 let cache = new Map<string, string>();
 
@@ -80,7 +80,7 @@ export function depsPlugin(
 
       build.onResolve({ filter: /.*/ }, async (args) => {
         // node: as external
-        if (builtinModules.includes(args.path)) {
+        if (builtin.includes(args.path)) {
           return { path: args.path, external: true };
         }
 
