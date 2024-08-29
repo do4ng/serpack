@@ -40,7 +40,7 @@ export class Analyzer {
     this.factory = new ResolverFactory({
       conditionNames: ['node', 'import'],
       mainFields: ['module', 'main'],
-      extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+      extensions: ['.js', '.jsx', '.ts', '.tsx', '.json', '.d.ts'],
       ...this.resolverOptions,
     });
 
@@ -68,6 +68,11 @@ export class Analyzer {
 
     // exclude options.externals
     if (this.options.externals && this.options.externals.includes(target)) {
+      return false;
+    }
+
+    // already analyzed
+    if (this.filesMeta[target]) {
       return false;
     }
 
@@ -112,13 +117,14 @@ export class Analyzer {
 
         if (resolved.error) {
           throw new Error(
-            `Error occured while resolving ${$importer.module} - ${resolved.error}`
+            `Error occured while resolving ${$importer.module} in ${target} - ${resolved.error}`
           );
         }
 
         $importer.target = resolved.path;
 
         if (keep && this.checkValidTarget($importer.target)) {
+          this.filesMeta[target] = {} as any;
           this.analyze($importer.target, keep);
         }
       } else {

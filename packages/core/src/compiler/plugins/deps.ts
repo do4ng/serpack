@@ -77,7 +77,7 @@ export function depsPlugin(
         process.cwd(),
         build.initialOptions.entryPoints[0]
       ).path;
-      const excludedDependencies = kit.builds[entry].exclude || [];
+      const excludedDependencies = kit.builds[entry]?.exclude || [];
 
       build.onResolve({ filter: /.*/ }, async (args) => {
         // node: as external
